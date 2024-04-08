@@ -1,7 +1,10 @@
 # The API is live on
 https://on-counter-billing-api.onrender.com/
 
-## sqlite3 is used for development database and postgreSQL for deployment
+#### sqlite3 is used for development database and postgreSQL for deployment
+
+ # META
+
 > All API endpoints can be accessesed only by employees and superuser
 
 > Employee endpoint can only be accessed by superuser
