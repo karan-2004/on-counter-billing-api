@@ -26,7 +26,7 @@ https://on-counter-billing-api.onrender.com/
 > bills endpoint will require customer, employees who is on bill counter and the list of products along with its quantity
 
 
-# Steps for set-up
+# Steps for setting-up this API in localhost
 ## Run the following commands in your terminal(lines starting with # are annotations not for execution)
 > #Creating a directory for the application
 
