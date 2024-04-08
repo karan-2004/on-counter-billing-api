@@ -1,3 +1,28 @@
+# The API is live on
+https://on-counter-billing-api.onrender.com/
+
+## sqlite3 is used for development database and postgreSQL for deployment
+> All API endpoints can be accessesed only by employees and superuser
+
+> Employee endpoint can only be accessed by superuser
+
+> Credentials for superuser:
+
+>   username : admin
+
+>   password : 123
+
+>   endpoints : employees, customers, products, bills
+
+> superuser can only add and access employess where it will require username and password for employees
+
+> customers endpoint will require username and their information like address, contactNo but I have used only email for other infos
+
+> product endpoint will require productName, inStockQuantity, productUnitPrice
+
+> bills endpoint will require customer, employees who is on bill counter and the list of products along with its quantity
+
+
 # Steps for set-up
 ## Run the following commands in your terminal(lines starting with # are annotations not for execution)
 > #Creating a directory for the application
