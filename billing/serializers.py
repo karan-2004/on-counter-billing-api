@@ -10,10 +10,11 @@ class ProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BilledProductSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = models.BilledProduct
-        exclude = ['price', 'bill']
+        fields = '__all__'
+        read_only_fields = ['price', 'bill']
+
 
 
 
@@ -67,10 +68,11 @@ class BillSerializer(serializers.ModelSerializer):
         bill = models.Bill(
             employee = validated_data['employee'],
             customer = validated_data['customer'])
+        bill.total = 0
         bill.save()
         billedProducts = validated_data['billedProducts']
         for product in billedProducts:
-            productObj = models.Product.objects.get(pk=product['product'])
+            productObj = product['product']
             obj = models.BilledProduct(
                 product = productObj,
                 bill = bill,

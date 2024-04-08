@@ -24,6 +24,6 @@ class BilledProduct(models.Model):
     price = models.IntegerField(null = True)
 
     def save(self, *args, **kwargs):
-        self.price = self.quantity*self.product.unitPrice
+        self.price = self.quantity*self.product.productPrice
         return super().save(*args, **kwargs)
 
