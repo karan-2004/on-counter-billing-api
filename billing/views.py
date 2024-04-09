@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from . import serializers
 from . import models
 from .perms import IsAdmin
+from rest_framework import serializers as restSerializers
 
 
 def logout(request):
@@ -17,10 +18,17 @@ class ProductViewset(viewsets.ModelViewSet):
     serializer_class = serializers.ProductSerializer
     queryset = models.Product.objects.all()
     lookup_field = 'productName'
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer_class()
+        data = serializer(queryset, many=True).data
+        return Response([datum['productName'] for datum in data])
     
 class BillViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BillSerializer
     queryset = models.Bill.objects.all()
+    lookup_field = 'id'
 
 class BilledProductViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BilledProductSerializer

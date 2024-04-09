@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy as _
-
+from rest_framework.serializers import BaseSerializer
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,13 +13,13 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class BilledProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Bill.billedProducts.through
-        fields = '__all__'
-        read_only_fields = ['price', 'bill']
+        model = models.BilledProduct
+        read_only_fields = ['price']
+        exclude = ['bill']
 
 
 class BillSerializer(serializers.ModelSerializer):
-    billedProducts = BilledProductSerializer(many = True)
+    billedProduct = BilledProductSerializer(many = True)
     employee = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=True))
     customer = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=False))
 
@@ -35,7 +35,7 @@ class BillSerializer(serializers.ModelSerializer):
             customer = validated_data['customer'])
         bill.total = 0
         bill.save()
-        billedProducts = validated_data['billedProducts']
+        billedProducts = validated_data['billedProduct']
         print(billedProducts)
         for product in billedProducts:
             productObj = product['product']
