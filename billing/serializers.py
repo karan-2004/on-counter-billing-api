@@ -83,6 +83,9 @@ class BillSerializer(serializers.ModelSerializer):
             productObj.inStockQuantity -= product['quantity']
             productObj.save()
         return bill
+    def update(self, instance, validated_data):
+        pass
+        
 
 
     
