@@ -2,9 +2,9 @@ from rest_framework import viewsets
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import logout as userLogout
+from rest_framework.response import Response
 from . import serializers
 from . import models
-from rest_framework.permissions import IsAdminUser
 from .perms import IsAdmin
 
 
@@ -21,7 +21,6 @@ class ProductViewset(viewsets.ModelViewSet):
 class BillViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BillSerializer
     queryset = models.Bill.objects.all()
-    lookup_field = 'id'
 
 class BilledProductViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BilledProductSerializer

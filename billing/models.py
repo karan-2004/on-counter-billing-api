@@ -10,16 +10,18 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.productName
+    
+
 
 class Bill(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employee')
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customer')
-    billedProducts = models.ManyToManyField(Product, through='BilledProduct')
+    billedProducts = models.ManyToManyField(Product, through='BilledProduct', related_name='billedProducts')
     total = models.IntegerField(null = True)
 
 class BilledProduct(models.Model):
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE, related_name='bill')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='product')
     quantity = models.IntegerField()
     price = models.IntegerField(null = True)
 

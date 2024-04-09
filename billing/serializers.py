@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from . import models
 from django.contrib.auth.models import User
-from rest_framework.permissions import IsAdminUser
+from rest_framework.validators import UniqueValidator
+from django.contrib.auth.password_validation import validate_password
+from django.utils.translation import gettext_lazy as _
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -11,10 +13,43 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class BilledProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.BilledProduct
+        model = models.Bill.billedProducts.through
         fields = '__all__'
         read_only_fields = ['price', 'bill']
 
+
+class BillSerializer(serializers.ModelSerializer):
+    billedProducts = BilledProductSerializer(many = True)
+    employee = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=True))
+    customer = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=False))
+
+
+    class Meta:
+        model = models.Bill
+        fields = '__all__'
+        read_only_fields = ['total']
+
+    def create(self, validated_data):
+        bill = models.Bill(
+            employee = validated_data['employee'],
+            customer = validated_data['customer'])
+        bill.total = 0
+        bill.save()
+        billedProducts = validated_data['billedProducts']
+        print(billedProducts)
+        for product in billedProducts:
+            productObj = product['product']
+            obj = models.BilledProduct(
+                product = productObj,
+                bill = bill,
+                quantity = product['quantity']
+            )
+            obj.save()
+            bill.total += obj.price
+            bill.save()
+            productObj.inStockQuantity -= product['quantity']
+            productObj.save()
+        return bill
 
 
 
@@ -24,11 +59,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email']
 
-from rest_framework.validators import UniqueValidator
-from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth import authenticate
-from django.core import exceptions
-from django.utils.translation import gettext_lazy as _
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -53,37 +83,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-class BillSerializer(serializers.ModelSerializer):
-    billedProducts = BilledProductSerializer(many = True)
-    employee = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=True))
-    customer = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=False))
-
-
-    class Meta:
-        model = models.Bill
-        fields = '__all__'
-        read_only_fields = ['total']
-
-    def create(self, validated_data):
-        bill = models.Bill(
-            employee = validated_data['employee'],
-            customer = validated_data['customer'])
-        bill.total = 0
-        bill.save()
-        billedProducts = validated_data['billedProducts']
-        for product in billedProducts:
-            productObj = product['product']
-            obj = models.BilledProduct(
-                product = productObj,
-                bill = bill,
-                quantity = product['quantity']
-            )
-            obj.save()
-            bill.total += obj.price
-            bill.save()
-            productObj.inStockQuantity -= product['quantity']
-            productObj.save()
-        return bill
 
 
     
