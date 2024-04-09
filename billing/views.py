@@ -25,7 +25,7 @@ class BillViewSet(viewsets.ModelViewSet):
 
 class BilledProductViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BilledProductSerializer
-    queryset = models.Bill.objects.all()
+    queryset = models.BilledProduct.objects.all()
     lookup_field = 'id'
 
 class CustomerViewSet(viewsets.ModelViewSet):
