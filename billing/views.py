@@ -29,6 +29,7 @@ class BillViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BillSerializer
     queryset = models.Bill.objects.all()
     lookup_field = 'id'
+    http_method_names = ['get', 'post', 'put', 'delete']
 
 class BilledProductViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.BilledProductSerializer
