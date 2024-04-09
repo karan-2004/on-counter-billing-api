@@ -13,7 +13,8 @@ class BilledProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.BilledProduct
-        exclude = ['price', 'bill']
+        exclude = ['bill']
+        read_only_fields = ['price']
 
 
 
@@ -53,7 +54,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return user
 
 class BillSerializer(serializers.ModelSerializer):
-    billedProducts = BilledProductSerializer(many = True)
+    billedProduct = BilledProductSerializer(many = True)
     employee = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=True))
     customer = serializers.PrimaryKeyRelatedField(queryset = User.objects.filter(is_staff=False))
 
@@ -68,9 +69,9 @@ class BillSerializer(serializers.ModelSerializer):
             employee = validated_data['employee'],
             customer = validated_data['customer'])
         bill.save()
-        billedProducts = validated_data['billedProducts']
+        billedProducts = validated_data['billedProduct']
         for product in billedProducts:
-            productObj = models.Product.objects.get(pk=product['product'])
+            productObj = product['product']
             obj = models.BilledProduct(
                 product = productObj,
                 bill = bill,
