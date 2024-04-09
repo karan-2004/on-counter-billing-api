@@ -69,6 +69,7 @@ class BillSerializer(serializers.ModelSerializer):
             employee = validated_data['employee'],
             customer = validated_data['customer'])
         bill.save()
+        bill.total = 0
         billedProducts = validated_data['billedProduct']
         for product in billedProducts:
             productObj = product['product']
