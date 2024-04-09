@@ -85,7 +85,26 @@ class BillSerializer(serializers.ModelSerializer):
             productObj.save()
         return bill
     def update(self, instance, validated_data):
-        pass
+        billObj = instance
+        billObj.total = 0
+        billObj.employee = validated_data['employee']
+        billObj.customer = validated_data['customer']
+        billObj.billedProduct.all().delete()
+        billedProducts = validated_data['billedProduct']
+        for product in billedProducts:
+            productObj = product['product']
+            obj = models.BilledProduct(
+                product = productObj,
+                bill = billObj,
+                quantity = product['quantity']
+            )
+            obj.save()
+            billObj.total += obj.price
+            billObj.save()
+            productObj.inStockQuantity -= product['quantity']
+            productObj.save()
+        return billObj
+
         
 
 
